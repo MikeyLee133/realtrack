@@ -15,7 +15,9 @@ private file storage. Live at **https://realtrack.mikeylee.io**.
 | Command | Does |
 |---|---|
 | `npm run dev` | Dev server |
-| `npm test` | Unit tests — Node's built-in runner (`node --test`), **no framework** |
+| `npm test` | All tests: `test:unit` + `test:components` |
+| `npm run test:unit` | Pure-logic unit tests — Node's built-in runner on `*.test.js` |
+| `npm run test:components` | Component/integration tests — Vitest + jsdom on `*.test.jsx` |
 | `npm run build` | Production build → `dist/` |
 | `npm run preview` | Serve the build locally |
 | `./deploy/deploy-droplet.sh` | Build + rsync to the droplet (see `docs/DEPLOY.md`) |
@@ -56,4 +58,4 @@ component, add a `useStore` method instead. See `docs/ARCHITECTURE.md` and
 - `VITE_SUPABASE_*` is read at **build time** — changing the backend needs a rebuild/redeploy.
 - Attached **files are not in the JSON backup** (structured data only).
 - On mobile the sidebar collapses to a top bar and drops the section nav (ADR-0014).
-- Tests use `node --test` on `.js` files — there is **no JSX transform** in the test setup, so components aren't unit-tested here (verified manually / via headless Chrome).
+- **Two test runners:** pure logic → `node --test` on `*.test.js` (no JSX); components/integration → Vitest + jsdom on `*.test.jsx`. `npm test` runs both. Component tests drive the real app through the store; scope queries to a section via its `sec-<id>` anchor (see `src/App.test.jsx`).

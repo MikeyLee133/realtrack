@@ -6,10 +6,14 @@ All notable changes to this project are documented here. Format based on
 ## [Unreleased]
 
 ### Added
+- **Component / integration tests** (Vitest + jsdom + Testing Library) that
+  drive the real app through the store: empty picker → create project →
+  add/delete task (+ live KPI) → document search → derived budget KPI → delete
+  project. `npm test` now runs both the Node unit suite and the Vitest suite.
 - **`CLAUDE.md`** — orientation for AI assistants working in the repo (commands,
   the architectural rule, layout, conventions, gotchas).
 - **Backup unit tests** (`backup.test.js`) — validation, export→import
-  round-trip, and the non-destructive merge (22 tests total).
+  round-trip, and the non-destructive merge.
 - **Interactive sidebar navigation.** The dashboard nav items (previously
   decorative) now scroll to their section — Overview, Schedule, Budget,
   Documents, Tasks, Vendors, Photo Log — and highlight the section currently in

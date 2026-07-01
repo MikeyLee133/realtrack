@@ -66,9 +66,17 @@ See [ADR-0003](docs/adr/0003-repository-layer-as-the-api-seam.md).
 
 ## Tests
 
-Add tests for any logic in the repository or other pure modules. Tests use
-`node:test` + `node:assert` with an in-memory `localStorage` (see
-`repository.test.js`) — no framework, no new dependencies. Run `npm test`.
+`npm test` runs two suites:
+
+- **Pure logic** (`*.test.js`) — `node:test` + `node:assert`, no framework. Add
+  a test for any repository/store/pure-module logic (see `repository.test.js`,
+  `backup.test.js`).
+- **Components / integration** (`*.test.jsx`) — Vitest + jsdom + Testing
+  Library. These drive the real app through the store, the way a user would (see
+  `src/App.test.jsx`). Scope queries to a dashboard section with its `sec-<id>`
+  anchor and `within(...)`.
+
+`npm run test:unit` / `npm run test:components` run them individually.
 
 ## Adding an architecture decision
 
