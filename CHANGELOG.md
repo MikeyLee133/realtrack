@@ -6,6 +6,10 @@ All notable changes to this project are documented here. Format based on
 ## [Unreleased]
 
 ### Added
+- **Gantt timeline for the schedule.** A new **Timeline** view (toggle with the
+  Stepper) draws each phase as a bar on a month calendar — colored by status,
+  with a "today" line — so durations and overlaps are visible at a glance. Phases
+  now carry ISO start/end dates. ([ADR-0016](docs/adr/0016-gantt-timeline.md))
 - **Component / integration tests** (Vitest + jsdom + Testing Library) that
   drive the real app through the store: empty picker → create project →
   add/delete task (+ live KPI) → document search → derived budget KPI → delete

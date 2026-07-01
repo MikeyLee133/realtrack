@@ -56,7 +56,8 @@
  * @property {string} name
  * @property {'done'|'active'|'upcoming'} status
  * @property {number} [percent]   Progress of the active phase, 0–100.
- * @property {string} [date]      Milestone display string for upcoming phases.
+ * @property {string} [start]     ISO 'YYYY-MM-DD' — phase start (for the Gantt).
+ * @property {string} [end]       ISO 'YYYY-MM-DD' — phase end (for the Gantt).
  */
 
 /**

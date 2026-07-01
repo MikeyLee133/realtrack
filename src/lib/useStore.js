@@ -289,10 +289,10 @@ export function useStore() {
     });
 
   const addPhase = useCallback(
-    ({ name, status, date }) => {
+    ({ name, status, start, end }) => {
       const trimmed = name.trim();
       if (!trimmed) return;
-      const phase = { id: uid(), name: trimmed, status: status || 'upcoming', percent: 0, date: date.trim().toUpperCase() };
+      const phase = { id: uid(), name: trimmed, status: status || 'upcoming', percent: 0, start: start || '', end: end || '' };
       persistSchedule((prev) => [...prev, phase]);
     },
     [activeId]

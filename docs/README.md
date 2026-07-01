@@ -34,6 +34,7 @@ Related, at the repo root:
 - [ADR-0013](adr/0013-delete-and-search.md) — Delete actions and document search
 - [ADR-0014](adr/0014-responsive-mobile-layout.md) — Responsive / mobile layout
 - [ADR-0015](adr/0015-static-spa-deployment.md) — Static SPA deployment
+- [ADR-0016](adr/0016-gantt-timeline.md) — Gantt timeline for the schedule
 
 ## Backend & hosting
 

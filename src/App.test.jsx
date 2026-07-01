@@ -1,4 +1,4 @@
-import { render, screen, within, waitFor } from '@testing-library/react';
+import { render, screen, within, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { test, expect, beforeEach } from 'vitest';
 import App from './App.jsx';
@@ -89,6 +89,24 @@ test('add a budget category → the Budget Spent KPI updates (derived)', async (
   // KPI is derived from the category: $30.0K / $60.0K, 50% used
   await waitFor(() => expect(section('overview').getByText('$30.0K')).toBeInTheDocument());
   expect(section('overview').getByText('50% used')).toBeInTheDocument();
+});
+
+test('schedule: add a phase with dates → it appears on the timeline', async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  await createProject(user, 'Cedar Street Build');
+
+  const sch = () => section('schedule');
+  await user.click(sch().getByRole('button', { name: '+ Add' }));
+  await user.type(sch().getByPlaceholderText('Phase name'), 'Framing');
+  fireEvent.change(sch().getByLabelText('Start date'), { target: { value: '2026-08-01' } });
+  fireEvent.change(sch().getByLabelText('End date'), { target: { value: '2026-10-15' } });
+  await user.click(sch().getByRole('button', { name: 'Add' }));
+
+  // Timeline (Gantt) is the default view — the phase shows and the
+  // "add dates" hint is gone.
+  expect(await sch().findByText('Framing')).toBeInTheDocument();
+  expect(sch().queryByText(/ADD START & END DATES/i)).not.toBeInTheDocument();
 });
 
 test('delete a project from the picker returns to the empty state', async () => {
