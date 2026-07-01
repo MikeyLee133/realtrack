@@ -339,10 +339,17 @@ export function useStore() {
     });
 
   const addVendor = useCallback(
-    ({ name, trade, status }) => {
+    ({ name, trade, status, phone, email }) => {
       const trimmed = name.trim();
       if (!trimmed) return;
-      const v = { id: uid(), name: trimmed, trade: trade.trim().toUpperCase(), status: status.trim() || 'Scheduled' };
+      const v = {
+        id: uid(),
+        name: trimmed,
+        trade: trade.trim().toUpperCase(),
+        status: status.trim() || 'Scheduled',
+        phone: (phone || '').trim(),
+        email: (email || '').trim(),
+      };
       persistVendors((prev) => [...prev, v]);
     },
     [activeId]

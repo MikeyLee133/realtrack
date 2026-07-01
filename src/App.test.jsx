@@ -91,6 +91,24 @@ test('add a budget category → the Budget Spent KPI updates (derived)', async (
   expect(section('overview').getByText('50% used')).toBeInTheDocument();
 });
 
+test('vendors: add a contractor with phone/email → tap-to-call/email links', async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  await createProject(user, 'Cedar Street Build');
+
+  const vend = () => section('vendors');
+  await user.click(vend().getByRole('button', { name: '+ Add' }));
+  await user.type(vend().getByPlaceholderText('Vendor name'), 'Apex Framing');
+  await user.type(vend().getByPlaceholderText('Trade'), 'Framing');
+  await user.type(vend().getByPlaceholderText('Phone (optional)'), '555-100-2000');
+  await user.type(vend().getByPlaceholderText('Email (optional)'), 'apex@build.com');
+  await user.click(vend().getByRole('button', { name: 'Add' }));
+
+  expect(vend().getByText('Apex Framing')).toBeInTheDocument();
+  expect(vend().getByRole('link', { name: /555-100-2000/ })).toHaveAttribute('href', 'tel:555-100-2000');
+  expect(vend().getByRole('link', { name: /apex@build.com/ })).toHaveAttribute('href', 'mailto:apex@build.com');
+});
+
 test('schedule: add a phase with dates → it appears on the timeline', async () => {
   const user = userEvent.setup();
   render(<App />);

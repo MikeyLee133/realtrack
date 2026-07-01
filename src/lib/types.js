@@ -89,6 +89,8 @@
  * @property {string} name
  * @property {string} trade    e.g. "FRAMING".
  * @property {string} status   "On site" | "Complete" | a date | "Scheduled".
+ * @property {string} [phone]  Contact number (tap-to-call).
+ * @property {string} [email]  Contact email (tap-to-email).
  */
 
 export {};

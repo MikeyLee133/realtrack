@@ -6,6 +6,9 @@ All notable changes to this project are documented here. Format based on
 ## [Unreleased]
 
 ### Added
+- **Vendor contact info.** Contractors can carry a phone and email, shown as
+  tap-to-call (`tel:`) and tap-to-email (`mailto:`) links — handy on-site from a
+  phone.
 - **Gantt timeline for the schedule.** A new **Timeline** view (toggle with the
   Stepper) draws each phase as a bar on a month calendar — colored by status,
   with a "today" line — so durations and overlaps are visible at a glance. Phases
