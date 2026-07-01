@@ -1,0 +1,90 @@
+/* Global styles ported from the Project Tracker design component (HANDOFF §7). */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f6f4f0;
+  color: #1b1a17;
+  font-family: 'Schibsted Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #dad6ce;
+  border-radius: 8px;
+  border: 3px solid #f6f4f0;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+input,
+select,
+button {
+  font-family: 'Schibsted Grotesk', sans-serif;
+}
+input:focus,
+select:focus {
+  outline: 2px solid #bb5a33;
+  outline-offset: 0;
+}
+
+a {
+  color: inherit;
+}
+
+/* Hover affordances that the DC runtime expressed via style-hover. */
+.rt-card-hover {
+  transition: border-color 0.12s ease;
+}
+.rt-card-hover:hover {
+  border-color: #bb5a33;
+}
+.rt-row-hover {
+  transition: background 0.1s ease;
+}
+.rt-row-hover:hover {
+  background: #faf8f5;
+}
+.rt-btn-primary {
+  transition: background 0.12s ease;
+}
+.rt-btn-primary:hover {
+  background: #a54e2b;
+}
+.rt-nav-item {
+  transition: background 0.1s ease, color 0.1s ease;
+}
+.rt-nav-item:hover {
+  background: #2a2722;
+  color: #edeae3;
+}
+.rt-back:hover {
+  color: #edeae3 !important;
+}
+
+/* Spinner for loading states. */
+@keyframes rt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.rt-spin {
+  animation: rt-spin 0.7s linear infinite;
+}
+
+/* Remove (×) button that only appears while hovering its row. */
+.rt-remove {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.rt-row-hover:hover .rt-remove,
+.rt-removable:hover .rt-remove {
+  opacity: 1;
+}
