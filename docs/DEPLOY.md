@@ -33,6 +33,38 @@ You choose the backend at deploy time:
    `VITE_SUPABASE_*` vars.
 4. **Deploy.** You get a `*.netlify.app` URL.
 
+## DigitalOcean Droplet (nginx) — subdomain on an existing site
+
+Serve the app under its own subdomain (e.g. `realtrack.mikeylee.io`) on the same
+Droplet as your main site. The files and helper live in `deploy/`.
+
+1. **DNS** — add an `A` record: host `realtrack` → your droplet IP
+   (`143.198.149.134`). Verify: `dig realtrack.mikeylee.io +short` returns the IP.
+2. **Web root** on the droplet: `sudo mkdir -p /var/www/realtrack`
+3. **Build + upload** from your machine (edit the vars at the top first):
+   ```bash
+   ./deploy/deploy-droplet.sh          # runs npm run build + rsync
+   ```
+4. **Install the nginx site**:
+   ```bash
+   sudo cp deploy/nginx/realtrack.mikeylee.io.conf /etc/nginx/sites-available/realtrack
+   sudo ln -s /etc/nginx/sites-available/realtrack /etc/nginx/sites-enabled/
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+5. **HTTPS** (Let's Encrypt):
+   ```bash
+   sudo apt install -y certbot python3-certbot-nginx   # if not already installed
+   sudo certbot --nginx -d realtrack.mikeylee.io
+   ```
+6. Visit **https://realtrack.mikeylee.io**, then link it from your main site:
+   `<a href="https://realtrack.mikeylee.io">Construction Tracker</a>`
+
+**Redeploys:** just re-run `./deploy/deploy-droplet.sh`.
+
+> On Apache or Caddy instead of nginx? The static files are identical — only the
+> server config differs. The equivalent is a vhost with docroot `/var/www/realtrack`
+> and an `index.html` fallback.
+
 ## Build it yourself
 
 ```bash
