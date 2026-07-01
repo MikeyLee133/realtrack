@@ -3,9 +3,7 @@ import { usingSupabase } from '../../lib/backend.js';
 import { signOut } from '../../lib/auth.js';
 import { useIsMobile } from '../../lib/useIsMobile.js';
 
-const NAV = ['Overview', 'Schedule', 'Budget & Costs', 'Documents', 'Receipts', 'Vendors', 'Photo Log'];
-
-export default function Sidebar({ active, onBack }) {
+export default function Sidebar({ active, onBack, sections = [], activeSection, onNavigate }) {
   const initial = (active.short || 'P').slice(0, 1);
   const mobile = useIsMobile();
 
@@ -50,22 +48,23 @@ export default function Sidebar({ active, onBack }) {
 
       <nav style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 3 }}>
         <div style={{ fontFamily: font.mono, fontSize: 9.5, letterSpacing: '0.12em', color: '#6F6A60', padding: '0 12px 8px' }}>PROJECT</div>
-        {NAV.map((label, i) => {
-          const activeItem = i === 0;
+        {sections.map((s) => {
+          const activeItem = s.id === activeSection;
           return (
-            <a
-              key={label}
+            <button
+              key={s.id}
+              onClick={() => onNavigate?.(s.id)}
               className={activeItem ? undefined : 'rt-nav-item'}
               style={{
-                display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 9,
+                display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 9, width: '100%', textAlign: 'left', border: 'none', fontFamily: 'inherit',
                 background: activeItem ? '#332F29' : 'transparent',
                 color: activeItem ? '#fff' : '#B5AFA4',
-                fontSize: 13.5, fontWeight: activeItem ? 600 : 400, textDecoration: 'none', cursor: 'pointer',
+                fontSize: 13.5, fontWeight: activeItem ? 600 : 400, cursor: 'pointer',
               }}
             >
               <span style={{ width: 7, height: 7, borderRadius: '50%', background: activeItem ? color.accent : '#4F4A42' }} />
-              {label}
-            </a>
+              {s.label}
+            </button>
           );
         })}
       </nav>

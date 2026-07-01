@@ -6,6 +6,10 @@ All notable changes to this project are documented here. Format based on
 ## [Unreleased]
 
 ### Added
+- **Interactive sidebar navigation.** The dashboard nav items (previously
+  decorative) now scroll to their section — Overview, Schedule, Budget,
+  Documents, Tasks, Vendors, Photo Log — and highlight the section currently in
+  view (scroll-spy), with a clicked item staying highlighted through the scroll.
 - **Deployment config.** Host-neutral static-deploy setup (`vercel.json`,
   `netlify.toml` with SPA fallback) + `docs/DEPLOY.md`, so the app can go live on
   a real URL local-first or Supabase-backed. ([ADR-0015](docs/adr/0015-static-spa-deployment.md))

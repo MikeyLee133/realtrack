@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { color, font } from '../lib/tokens.js';
 import { budgetTotals } from '../lib/useStore.js';
 import { useIsMobile } from '../lib/useIsMobile.js';
@@ -12,6 +12,18 @@ import Vendors from './dashboard/Vendors.jsx';
 import PhotoLog from './dashboard/PhotoLog.jsx';
 import EditProjectModal from './dashboard/EditProjectModal.jsx';
 import { LoadingState, ErrorState } from './StatusStates.jsx';
+
+// Dashboard sections, in page order — the sidebar nav scrolls to these and
+// highlights whichever is currently in view.
+const SECTIONS = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'schedule', label: 'Schedule' },
+  { id: 'budget', label: 'Budget & Costs' },
+  { id: 'documents', label: 'Documents & Receipts' },
+  { id: 'tasks', label: 'Tasks' },
+  { id: 'vendors', label: 'Vendors' },
+  { id: 'photos', label: 'Photo Log' },
+];
 
 export default function Dashboard({ store }) {
   const {
@@ -43,9 +55,45 @@ export default function Dashboard({ store }) {
   // Budget roll-ups — derived from the categories; feeds the hero KPI + card.
   const totals = useMemo(() => budgetTotals(budget), [budget]);
 
+  // Sidebar nav → scroll to a section, and highlight the one in view.
+  const [activeSection, setActiveSection] = useState('overview');
+  // After a nav click, keep the clicked item highlighted through the smooth
+  // scroll (some near-bottom sections can't reach the very top); scroll-spy
+  // resumes once the user scrolls manually.
+  const suppressSpyUntil = useRef(0);
+  const scrollToSection = (id) => {
+    document.getElementById('sec-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveSection(id);
+    suppressSpyUntil.current = Date.now() + 900;
+  };
+  useEffect(() => {
+    if (dataLoading || dataError) return;
+    const onScroll = () => {
+      if (Date.now() < suppressSpyUntil.current) return;
+      // Active = the section whose top edge is nearest the top of the viewport
+      // among those at/above a threshold line. Using the closest top (not DOM
+      // order) keeps it correct across the two-column lower grid.
+      let current = SECTIONS[0].id;
+      let bestTop = -Infinity;
+      for (const s of SECTIONS) {
+        const el = document.getElementById('sec-' + s.id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top <= 120 && top > bestTop) {
+          bestTop = top;
+          current = s.id;
+        }
+      }
+      setActiveSection(current);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [dataLoading, dataError]);
+
   return (
     <div style={{ display: 'flex', flexDirection: mobile ? 'column' : 'row', minHeight: '100vh', color: color.ink }}>
-      <Sidebar active={active} onBack={backToProjects} />
+      <Sidebar active={active} onBack={backToProjects} sections={SECTIONS} activeSection={activeSection} onNavigate={scrollToSection} />
 
       <main style={{ flex: 1, minWidth: 0 }}>
         <div style={{ maxWidth: 1320, margin: '0 auto', padding: mobile ? '18px 16px 40px' : '30px 40px 56px' }}>
@@ -81,19 +129,33 @@ export default function Dashboard({ store }) {
             </div>
           ) : (
             <>
-              <HeroRow active={active} budget={totals} onEdit={() => setEditOpen(true)} {...kpis} />
-              <ScheduleStepper schedule={schedule} addPhase={addPhase} removePhase={removePhase} cyclePhaseStatus={cyclePhaseStatus} />
+              <div id="sec-overview" style={{ scrollMarginTop: 20 }}>
+                <HeroRow active={active} budget={totals} onEdit={() => setEditOpen(true)} {...kpis} />
+              </div>
+              <div id="sec-schedule" style={{ scrollMarginTop: 20 }}>
+                <ScheduleStepper schedule={schedule} addPhase={addPhase} removePhase={removePhase} cyclePhaseStatus={cyclePhaseStatus} />
+              </div>
 
               {/* Lower grid */}
               <div style={{ display: 'grid', gridTemplateColumns: mobile ? '1fr' : '1.5fr 1fr', gap: 18 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                  <BudgetByCategory budget={budget} totals={totals} addBudgetCategory={addBudgetCategory} removeBudgetCategory={removeBudgetCategory} setContingency={setContingency} />
-                  <DocumentsReceipts docs={docs} addDoc={addDoc} removeDoc={removeDoc} open={docFormOpen} setOpen={setDocFormOpen} query={docQuery} />
+                  <div id="sec-budget" style={{ scrollMarginTop: 20 }}>
+                    <BudgetByCategory budget={budget} totals={totals} addBudgetCategory={addBudgetCategory} removeBudgetCategory={removeBudgetCategory} setContingency={setContingency} />
+                  </div>
+                  <div id="sec-documents" style={{ scrollMarginTop: 20 }}>
+                    <DocumentsReceipts docs={docs} addDoc={addDoc} removeDoc={removeDoc} open={docFormOpen} setOpen={setDocFormOpen} query={docQuery} />
+                  </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                  <Tasks tasks={tasks} toggleTask={toggleTask} addTask={addTask} removeTask={removeTask} />
-                  <Vendors vendors={vendors} addVendor={addVendor} removeVendor={removeVendor} />
-                  <PhotoLog projectId={active.id} />
+                  <div id="sec-tasks" style={{ scrollMarginTop: 20 }}>
+                    <Tasks tasks={tasks} toggleTask={toggleTask} addTask={addTask} removeTask={removeTask} />
+                  </div>
+                  <div id="sec-vendors" style={{ scrollMarginTop: 20 }}>
+                    <Vendors vendors={vendors} addVendor={addVendor} removeVendor={removeVendor} />
+                  </div>
+                  <div id="sec-photos" style={{ scrollMarginTop: 20 }}>
+                    <PhotoLog projectId={active.id} />
+                  </div>
                 </div>
               </div>
 
