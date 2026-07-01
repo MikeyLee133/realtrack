@@ -6,6 +6,10 @@ All notable changes to this project are documented here. Format based on
 ## [Unreleased]
 
 ### Added
+- **`CLAUDE.md`** — orientation for AI assistants working in the repo (commands,
+  the architectural rule, layout, conventions, gotchas).
+- **Backup unit tests** (`backup.test.js`) — validation, export→import
+  round-trip, and the non-destructive merge (22 tests total).
 - **Interactive sidebar navigation.** The dashboard nav items (previously
   decorative) now scroll to their section — Overview, Schedule, Budget,
   Documents, Tasks, Vendors, Photo Log — and highlight the section currently in
