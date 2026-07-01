@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { color, font } from '../../lib/tokens.js';
 import Card from './Card.jsx';
 import EmptyState from './EmptyState.jsx';
+import VendorDirectory from './VendorDirectory.jsx';
 
-const AVATARS = ['#3D4A3F', '#5A4A3D', '#4A5A6B', '#6B4A4A', '#4F5A4A', '#5B5560'];
+export const AVATARS = ['#3D4A3F', '#5A4A3D', '#4A5A6B', '#6B4A4A', '#4F5A4A', '#5B5560'];
 
 // Avatar initials + color and the status color are derived from the stored
 // fields; contact info (phone/email) is optional and shown as tap-to-call /
 // tap-to-email links — handy on-site from a phone.
-function vendorView(v) {
+export function vendorView(v) {
   const initials = v.name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
   let hash = 0;
   for (const ch of v.name) hash = (hash + ch.charCodeAt(0)) % AVATARS.length;
@@ -33,15 +34,16 @@ const contactLink = {
 };
 const input = { height: 34, padding: '0 11px', border: '1px solid #E1DDD5', borderRadius: 8, fontSize: 13, background: '#fff' };
 
-function PhoneIcon() {
+export function PhoneIcon() {
   return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2Z" /></svg>;
 }
-function MailIcon() {
+export function MailIcon() {
   return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>;
 }
 
 export default function Vendors({ vendors, addVendor, removeVendor }) {
   const [open, setOpen] = useState(false);
+  const [dirOpen, setDirOpen] = useState(false);
   const [draft, setDraft] = useState({ name: '', trade: '', status: '', phone: '', email: '' });
 
   const close = () => {
@@ -62,8 +64,15 @@ export default function Vendors({ vendors, addVendor, removeVendor }) {
     <Card>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em' }}>Vendors &amp; Contractors</h3>
-        <button onClick={() => setOpen(true)} style={{ background: 'none', border: 'none', fontSize: 12, color: color.accent, fontWeight: 600, cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>+ Add</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          {vendors.length > 0 && (
+            <button onClick={() => setDirOpen(true)} style={{ background: 'none', border: 'none', fontSize: 12, color: color.accent, fontWeight: 600, cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>Directory →</button>
+          )}
+          <button onClick={() => setOpen(true)} style={{ background: 'none', border: 'none', fontSize: 12, color: color.accent, fontWeight: 600, cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>+ Add</button>
+        </div>
       </div>
+
+      {dirOpen && <VendorDirectory vendors={vendors} removeVendor={removeVendor} onClose={() => setDirOpen(false)} />}
 
       {open && (
         <div style={{ display: 'flex', gap: 8, marginBottom: 14, padding: 12, background: '#FAF8F5', border: '1px solid #ECE8E1', borderRadius: 11, flexWrap: 'wrap' }}>

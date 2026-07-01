@@ -109,6 +109,34 @@ test('vendors: add a contractor with phone/email → tap-to-call/email links', a
   expect(vend().getByRole('link', { name: /apex@build.com/ })).toHaveAttribute('href', 'mailto:apex@build.com');
 });
 
+test('vendor directory: opens, groups by trade, and is searchable', async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  await createProject(user, 'Cedar Street Build');
+
+  const vend = () => section('vendors');
+  const addVendor = async (name, trade) => {
+    await user.click(vend().getByRole('button', { name: '+ Add' }));
+    await user.type(vend().getByPlaceholderText('Vendor name'), name);
+    await user.type(vend().getByPlaceholderText('Trade'), trade);
+    await user.click(vend().getByRole('button', { name: 'Add' }));
+  };
+  await addVendor('Apex Framing', 'Framing');
+  await addVendor('Sterling Concrete', 'Foundation');
+
+  await user.click(vend().getByRole('button', { name: /Directory/i }));
+  const dialog = () => within(screen.getByRole('dialog'));
+
+  expect(dialog().getByText('FRAMING')).toBeInTheDocument(); // trade group header
+  expect(dialog().getByText('FOUNDATION')).toBeInTheDocument();
+  expect(dialog().getByText('Apex Framing')).toBeInTheDocument();
+
+  // search filters within the directory
+  await user.type(dialog().getByPlaceholderText(/Search by name/i), 'apex');
+  expect(dialog().getByText('Apex Framing')).toBeInTheDocument();
+  expect(dialog().queryByText('Sterling Concrete')).not.toBeInTheDocument();
+});
+
 test('schedule: add a phase with dates → it appears on the timeline', async () => {
   const user = userEvent.setup();
   render(<App />);

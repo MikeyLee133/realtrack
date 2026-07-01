@@ -6,6 +6,9 @@ All notable changes to this project are documented here. Format based on
 ## [Unreleased]
 
 ### Added
+- **Contractor Directory.** A "Directory →" button on the Vendors card opens a
+  searchable, spacious view of all contractors **grouped by trade**, each with
+  status and tap-to-call/email contacts.
 - **Vendor contact info.** Contractors can carry a phone and email, shown as
   tap-to-call (`tel:`) and tap-to-email (`mailto:`) links — handy on-site from a
   phone.
